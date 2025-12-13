@@ -6,11 +6,23 @@ const Createproduct = async (req, res) => {
 
   res.status(200).json({ success: true, Product });
 };
-const Getallproducts = (req, res) => {
-  res.status(200).json({ message: "all products " });
+const Getallproducts = async (req, res) => {
+  const Getallproducts = await Products.find({});
+  res.status(200).json({ success: true, Getallproducts });
 };
 const Getoneproduct = (req, res) => {
   res.status(200).json({ message: "all one product " });
 };
+const Updateproduct = async (req, res) => {
+  const productid = await Products.findById(req.params.id);
+  if (!productid) {
+    res.status(500).json({ success: false, message: "product not found " });
+  }
+  const updateproduct = await Products.findByIdAndUpdate(productid, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  res.status(200).json({ success: true, updateproduct });
+};
 
-export { Getallproducts, Getoneproduct, Createproduct };
+export { Getallproducts, Getoneproduct, Createproduct, Updateproduct };
