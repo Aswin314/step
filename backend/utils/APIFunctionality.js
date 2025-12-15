@@ -17,6 +17,11 @@ class APIFunctionality {
     const removefields = ["keyword", "page", "limit"];
     removefields.forEach((key) => delete querycopy[key]);
     this.query = this.query.find(querycopy);
+    return this;
+  }
+  pagination(resultpage) {
+    const currentpage = Number(this.querystr.page) || 1;
+    const skip = resultpage * (currentpage - 1);
   }
 }
 export default APIFunctionality;

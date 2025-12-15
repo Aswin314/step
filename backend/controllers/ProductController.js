@@ -11,9 +11,11 @@ const Createproduct = Asyncerrorhandler(async (req, res) => {
 });
 const Getallproducts = Asyncerrorhandler(async (req, res) => {
   console.log(req.query);
+  const resultpage=3
   const apifunctionality = new APIFunctionality(Products.find({}), req.query)
     .search()
-    .filter();
+    .filter()
+    .pagination(resultpage);
   const Getallproducts = await apifunctionality.query;
   res.status(200).json({ success: true, Getallproducts });
 });
