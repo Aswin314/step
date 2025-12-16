@@ -22,6 +22,8 @@ class APIFunctionality {
   pagination(resultpage) {
     const currentpage = Number(this.querystr.page) || 1;
     const skip = resultpage * (currentpage - 1);
+    this.query = this.query.limit(resultpage).skip(skip);
+    return this
   }
 }
 export default APIFunctionality;

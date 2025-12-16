@@ -11,13 +11,15 @@ const Createproduct = Asyncerrorhandler(async (req, res) => {
 });
 const Getallproducts = Asyncerrorhandler(async (req, res) => {
   console.log(req.query);
-  const resultpage=3
-  const apifunctionality = new APIFunctionality(Products.find({}), req.query)
+  const resultpage = 3;
+  const apifeature = new APIFunctionality(Products.find({}), req.query)
     .search()
-    .filter()
-    .pagination(resultpage);
-  const Getallproducts = await apifunctionality.query;
-  res.status(200).json({ success: true, Getallproducts });
+    .filter();
+  const filteredquery = apifeature.query.clone();
+  const productcount = filteredquery.countDocument();
+  const totalpage = math.ceil(productcount / resultpage);
+  const Getallproducts = await apifeature.query;
+  res.status(200).json({ success: true, Getallproducts, productcount });
 });
 const Getoneproduct = Asyncerrorhandler(async (req, res, next) => {
   const productid = await Products.findById(req.params.id);
