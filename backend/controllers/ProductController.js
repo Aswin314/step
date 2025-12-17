@@ -18,7 +18,16 @@ const Getallproducts = Asyncerrorhandler(async (req, res) => {
   const filteredquery = apifeature.query.clone();
   const productcount = filteredquery.countDocument();
   const totalpage = math.ceil(productcount / resultpage);
+  const page = Number(req.query.page) || 1;
+
+  if (page > totalpage && productcount > 0) {
+    return next(new HandleError("this page is not exist", 404));
+  }
+  apifeature.pagination(resultpage);
   const Getallproducts = await apifeature.query;
+  if (!Products || productcount === 0) {
+    return next(new HandleError("no products found", 404));
+  }
   res.status(200).json({ success: true, Getallproducts, productcount });
 });
 const Getoneproduct = Asyncerrorhandler(async (req, res, next) => {
