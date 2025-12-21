@@ -12,8 +12,8 @@ const PORT = process.env.PORT;
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(errorhandlemiddleware);
-app.use("/", UserRouter);
-app.use("/", ProductRouter);
+app.use("/api/v1", UserRouter);
+app.use("/api/v1", ProductRouter);
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
 });
