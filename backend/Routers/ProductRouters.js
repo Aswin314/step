@@ -6,12 +6,23 @@ import {
   Getoneproduct,
   Updateproduct,
 } from "../controllers/ProductController.js";
+import { rolebasedAccess, verifyuserAuth } from "../middleware/userAuth.js";
 
 const ProductRouter = express.Router();
 
-ProductRouter.route("/api/v1/products").get(Getallproducts).post(Createproduct);
-ProductRouter.route("/api/v1/product").get(Getoneproduct);
-ProductRouter.route("/api/v1/product/:id").put(Updateproduct);
-ProductRouter.route("/api/v1/product/:id").delete(Deleteproduct);
+ProductRouter.route("/products")
+  .get(verifyuserAuth, Getallproducts)
+  .post(verifyuserAuth, rolebasedAccess("admin"), Createproduct);
+ProductRouter.route("/product").get(verifyuserAuth, Getoneproduct);
+ProductRouter.route("/product/:id").put(
+  verifyuserAuth,
+  rolebasedAccess("admin"),
+  Updateproduct
+);
+ProductRouter.route("/product/:id").delete(
+  verifyuserAuth,
+  rolebasedAccess("admin"),
+  Deleteproduct
+);
 
 export default ProductRouter;

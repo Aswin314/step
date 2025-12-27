@@ -4,12 +4,14 @@ import ProductRouter from "./Routers/ProductRouters.js";
 import errorhandlemiddleware from "./middleware/error.js";
 import ConnectDB from "./config/db.js";
 import UserRouter from "./Routers/UserRouter.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 ConnectDB();
 const app = express();
 const PORT = process.env.PORT;
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded());
 app.use(errorhandlemiddleware);
 app.use("/api/v1", UserRouter);

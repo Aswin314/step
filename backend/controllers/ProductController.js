@@ -4,6 +4,7 @@ import APIFunctionality from "../utils/APIFunctionality.js";
 import HandleError from "../utils/handleerros.js";
 
 const Createproduct = Asyncerrorhandler(async (req, res) => {
+  req.body.user = req.user.id;
   const Product = await Products.create(req.body);
   console.log(Product);
 
@@ -16,8 +17,8 @@ const Getallproducts = Asyncerrorhandler(async (req, res) => {
     .search()
     .filter();
   const filteredquery = apifeature.query.clone();
-  const productcount = filteredquery.countDocument();
-  const totalpage = math.ceil(productcount / resultpage);
+  const productcount = await filteredquery.countDocuments();
+  const totalpage = Math.ceil(productcount / resultpage);
   const page = Number(req.query.page) || 1;
 
   if (page > totalpage && productcount > 0) {
