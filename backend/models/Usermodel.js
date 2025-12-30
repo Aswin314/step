@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import validator from "validator";
-import bcrypt from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -39,15 +40,16 @@ const UserSchema = new mongoose.Schema(
       default: "user",
     },
     resetPasswordToken: String,
-    restPasswordExpire: Date,
+    resetPasswordExpire: Date,
   },
   { timestamps: true }
 );
 UserSchema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(this.password, 10);
   if (!this.isModified("password")) {
-    next();
+    return next();
   }
+  this.password = await bcryptjs.hash(this.password, 10);
+  next();
 });
 UserSchema.methods.getJWTToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
@@ -55,8 +57,20 @@ UserSchema.methods.getJWTToken = function () {
   });
 };
 UserSchema.methods.verifyPassword = async function (enteredpassword) {
-  return await bcrypt.compare(enteredpassword, this.password);
+  return await bcryptjs.compare(enteredpassword, this.password);
 };
+UserSchema.methods.generatePasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.resetPasswordExpire = Date.now() + 5 * 60 * 1000;
+  return resetToken;
+};
+// backward-compatible alias for existing calls
+UserSchema.methods.generatepasswordresttoken =
+  UserSchema.methods.generatePasswordResetToken;
 const User = mongoose.model("User", UserSchema);
 
 export default User;
